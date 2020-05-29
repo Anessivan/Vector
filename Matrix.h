@@ -5,6 +5,7 @@ class Matrix
 	size_t size_column, size_string;
 	T** data;
 	void Resize(int n = size_string, int m = size_column);
+	Matrix Del(int i, int j) const;
 public:
 	Matrix();
 	Matrix(const Matrix& m);
@@ -15,8 +16,11 @@ public:
 	Matrix& operator=(const Matrix m);
 	Matrix operator+(const Matrix& m)const;
 	Matrix operator- (const Matrix& m)const;
-	Matrix operator*(const Matrix&)const;
+	Matrix operator*(const Matrix& m)const;
+	Matrix operator/(const Matrix& m);
 	T* operator[](const int n);
+	const T* operator[](const int n)const;
+	T Det() const;
 	int GetSizeColumn()const;
 	int GetSizeString()const;
 	//T SetElement(int i, int j);
@@ -47,7 +51,7 @@ public:
 			data[i] = new T[size_column];
 		}
 		for (int i = 0; i < size_string; i++)
-			for (int j = 0; j < size_string; j++)
+			for (int j = 0; j < size_column; j++)
 				data[i][j] = m.data[i][j];
 	}
 
@@ -62,7 +66,7 @@ public:
 			data[i] = new T[size_column];
 		}
 		for (int i = 0; i < size_string; i++)
-			for (int j = 0; j < size_string; j++)
+			for (int j = 0; j < size_column; j++)
 				data[i][j] = 0;
 	}
 
@@ -87,8 +91,9 @@ public:
 		if (size_string == m.size_string && size_column == m.size_column)
 			for (int i = 0; i < size_string; i++)
 				for (int j = 0; j < size_column; j++)
-					if (data[i][j] != m.data[i][j])
-						return false;
+					if (data[i][j] == m.data[i][j])
+						k++;
+		if (k == size_string * size_column) return false;
 		return true;
 	}
 
@@ -106,12 +111,12 @@ public:
 		{
 			delete[] data;
 			data = new T* [m.size_string];
-			for (int i = 0; i < m.size_string; i++)
-				data[i] = new T[size_column];
+			for (unsigned int i = 0; i < m.size_string; i++)
+				data[i] = new T[m.size_column];
 			size_column = m.size_column;
 			size_string = m.size_string;
-			for (int i = 0; i < size_string; i++)
-				for (int j = 0; j < size_column; j++)
+			for (unsigned int i = 0; i < size_string; i++)
+				for (unsigned int j = 0; j < size_column; j++)
 					data[i][j] = m.data[i][j];
 		}
 		return *this;
@@ -154,7 +159,7 @@ public:
 				for (int i = 0; i < size_string; i++)
 					for (int j = 0; j < m.size_column; j++)
 						for (int k = 0; k < size_column; k++)
-							mult.data[i][j] += data[i][k] * m.data[k][i];
+							mult.data[i][j] += data[i][k] * m.data[k][j];
 			}
 			else
 			{
@@ -164,9 +169,62 @@ public:
 	}
 
 	template<class T>
+	inline Matrix<T> Matrix<T>::operator/(const Matrix& m)
+	{
+		Matrix<T> obr(size_column, size_column);
+		if (size_column == size_string && m.size_column == m.size_string && size_column == m.size_column)
+		{
+			T det = m.Det();
+			if (det == 0) throw "Wrong matrix: det = 0";
+			if (size_string == 1)
+				obr[0][0] = 1 / m[0][0];
+			for (int i = 0; i < obr.size_column; i++)
+				for (int j = 0; j < obr.size_column; j++)
+				{
+					int size = obr.size_column - 1;
+					Matrix<T> temp(size, size);
+					temp = m.Del(j, i);
+					obr[i][j] = pow(-1, i + j + 2) * temp.Det() / det;
+				}
+		}
+		else throw "Wrong size of Matrixs";
+		Matrix<T> res(size_string, m.size_column);
+		Matrix<T> left = *this;
+		res = left * obr;
+		return res;
+	}
+
+	template<class T>
 	inline T* Matrix<T>::operator[](const int n)
 	{
 		return data[n];
+	}
+
+	template<class T>
+	inline const T* Matrix<T>::operator[](const int n) const
+	{
+		return data[n];
+	}
+
+	template<class T>
+	inline T Matrix<T>::Det() const
+	{
+		T temp = 0;
+		int k = 1;
+		if (size_column != size_string) throw "Wrong size of Matrix";
+		if (size_column == 1) return data[0][0];
+		else if (size_column == 2)
+			temp = data[0][0] * data[1][1] - data[1][0] * data[0][1];
+		else
+		{
+			for (int i = 0; i < size_column; i++)
+			{
+				Matrix minor = this->Del(0,i);
+				temp += k * data[0][i] * minor.Det();
+				k = -k;
+			}
+		}
+		return temp;
 	}
 
 	template<class T>
@@ -207,6 +265,28 @@ public:
 				data[i][j] = copy[i][j];
 			}
 		}
+	}
+	template<class T>
+	inline Matrix<T> Matrix<T>::Del(int string, int column)const
+	{
+		Matrix temp(size_string - 1, size_column - 1);
+		int cnt = 0;
+		for (int i = 0; i < size_string; i++)
+		{
+			if (i != string)
+			{
+				for (int j = 0, k = 0; j < size_column; j++)
+				{
+					if (j != column)
+					{
+						temp[cnt][k] = data[i][j];
+						k++;
+					}
+				}
+				cnt++;
+			}
+		}
+		return temp;
 	}
 	template<class T>
 	inline std::ostream& operator<<(std::ostream& out,const Matrix<T>& m)
