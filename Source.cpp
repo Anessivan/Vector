@@ -2,7 +2,17 @@
 #include "Vector.h"
 #include <iostream>
 #include <ctime>
+#include <conio.h>
+#include <stdlib.h>
+#include <time.h>
 
+template <class T>
+void randomvector(vector<T>& v)
+{
+	srand((unsigned int)time(NULL));
+	for (int i = 0; i < v.length(); i++)
+		v[i] = rand();
+}
 
 int main()
 {
@@ -42,22 +52,26 @@ int main()
 	{
 		std::cout << t[i][0] << ' ';
 	}
+	vector<int> Bottle(5000);
 	int timestart = clock();
-	sum1.BotleSort();
+	Bottle.BotleSort();
 	int diff = clock() - timestart;
-	std::cout << "Botle sort of sum: " << sum1 << std::endl << "sort time: " << diff << std::endl;
+	std::cout << "Botle sort of vector with lenght = 5000 "  << "sort time: " << diff << std::endl;
+	vector<int> Insert(5000);
 	timestart = clock();
-	v.InsertSort();
+	Insert.InsertSort();
 	diff = clock() - timestart;
-	std::cout << "Insert sort of first vector " << v << "sort time: " << diff << std::endl;
+	std::cout << "Insert sort of vector with lenght = 5000" << "sort time: " << diff << std::endl;
+	vector<int> Quic(5000);
 	timestart = clock();
-	v2.QuickSort();
+	Quic.QuickSort();
 	diff = clock() - timestart;
-	std::cout << "Quic sort of second vector" << v2 << "sort time: " << diff << std::endl;
+	std::cout << "Quic sort of vector with lenghth = 5000" << "sort time: " << diff << std::endl;
 	Matrix<double> left_matrix;
 	Matrix<double> right_matrix;
 	Matrix<double> result_matrix;
 	std::cin >> left_matrix >> right_matrix;
 	result_matrix = left_matrix / right_matrix;
 	std::cout << result_matrix;
+	_getch();
 }

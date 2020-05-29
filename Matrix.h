@@ -4,7 +4,7 @@ class Matrix
 {
 	size_t size_column, size_string;
 	T** data;
-	void Resize(int n = size_string, int m = size_column);
+	void Resize(int n, int m);
 	Matrix Del(int i, int j) const;
 public:
 	Matrix();

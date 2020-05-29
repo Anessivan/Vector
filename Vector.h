@@ -2,7 +2,6 @@
 template <class T>
 class vector
 {
-	//void quicksort(int left, int right);
 	int size;
 	T* data;
 	void quicksort(unsigned int left, unsigned int right);
@@ -35,36 +34,6 @@ public:
 	template <class T>
 	friend std::ostream& operator<<(std::ostream& out, vector<T> m);
 };
-
-/*template<class T>
-inline void vector<T>::quicksort(int left, int right)
-{
-	T comp = data[(left + right) / 2];
-	int i = left, j = right;
-	do
-	{
-		while (data[i] < comp)
-			i++;
-		while (data[j] > comp)
-			j--;
-		if (i <= j)
-		{
-			if (data[i] > data[j])
-			{
-				T copy;
-				copy = data[i];
-				data[i] = data[j];
-				data[j] = copy;
-			}
-			i++;
-			j--;
-		}
-	} while (i <= j);..
-	if (i < right)
-		quicksort(i, right);
-	if (j > left)
-		quicksort(left, j);
-}*/
 template <class T>
 void vector<T>::quicksort(unsigned int left,unsigned int right)
 {
@@ -306,30 +275,6 @@ inline void vector<T>::BotleSort()
 			}
 }
 
-/*template<class T>
-inline void QuickSort(vector<T>& v, unsigned int left, unsigned int right)
-{
-	T comp = v.data[(left + right) / 2];
-	int i = left, j = right;
-	do
-	{
-		while (v.data[i] < comp)
-			i++;
-		while (v.data[j] > comp)
-			j--;
-		if (i <= j)
-		{
-			if (v.data[i] > v.data[j])
-			{
-				T temp = v.data[i];
-				v.data[i] = v.data[j];
-				v.data[j] = temp;
-			}
-			i++;
-			j--;
-		}
-	} while (i <= j);
-}*/
 template<typename T>
 void vector<T>::QuickSort()
 {
@@ -341,17 +286,17 @@ void vector<T>::QuickSort()
 template<class T>
 inline void vector<T>::InsertSort()
 {
-	for (int i = 1; i < size; i++)
+	for (int i = 0; i < size - 1; i++)
 	{
-		T copy = data[i];
+		T copy = data[i - 1];
 		int j = i - 1;
-		while ((j >= 0) && (data[j] > copy))
-		{
-			T temp = data[j];
-			data[j] = data[j + 1];
-			data[j + 1] = temp;
-			j--;
-		}
+		for (int k = i + 1; k > 0; k--)
+			if (copy < data[k - 1])
+			{
+				data[k] = data[j - 1];
+				j = k - 1;
+			}
+		data[j] = copy;
 	}
 }
 
