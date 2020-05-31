@@ -30,7 +30,7 @@ public:
 	unsigned int Count(const T& c)const;
 	vector<T*> find(const T& value)const;
 	template <class T>
-	friend std::istream& operator>>(std::istream& in, const vector<T>& c);
+	friend std::istream& operator>>(std::istream& in, vector<T>& c);
 	template <class T>
 	friend std::ostream& operator<<(std::ostream& out, vector<T> m);
 };
@@ -306,20 +306,20 @@ inline void vector<T>::Resize(const int n)
 	if (size != n)
 	{
 		int copysize = size;
-		T* copy = data; // ñîõðàíåíèå èçíà÷àëüíûõ äàííûõ
+		T* copy = data; // Ã±Ã®ÃµÃ°Ã Ã­Ã¥Ã­Ã¨Ã¥ Ã¨Ã§Ã­Ã Ã·Ã Ã«Ã¼Ã­Ã»Ãµ Ã¤Ã Ã­Ã­Ã»Ãµ
 		size = n;
 		data = nullptr;
 		data = new T[size];
 		if (data == nullptr)
 			throw "Memmory generation error";
-		if (n >= copysize) //Ñëó÷àé, êîãäà ìû ìåíÿåì ðàçìåð ïàìÿòè íà áîëüøèé
+		if (n >= copysize) //Ã‘Ã«Ã³Ã·Ã Ã©, ÃªÃ®Ã£Ã¤Ã  Ã¬Ã» Ã¬Ã¥Ã­Ã¿Ã¥Ã¬ Ã°Ã Ã§Ã¬Ã¥Ã° Ã¯Ã Ã¬Ã¿Ã²Ã¨ Ã­Ã  Ã¡Ã®Ã«Ã¼Ã¸Ã¨Ã©
 		{
 			for (int i = 0; i < copysize; i++)
 				data[i] = copy[i];
 			for (int i= copysize; i < size; i++)
 				data[i] = 0;
 		}
-		else //Ñëó÷àé, êîãäà ìû èçìåíÿì ðàçìåð íà ìåíüøèé
+		else //Ã‘Ã«Ã³Ã·Ã Ã©, ÃªÃ®Ã£Ã¤Ã  Ã¬Ã» Ã¨Ã§Ã¬Ã¥Ã­Ã¿Ã¬ Ã°Ã Ã§Ã¬Ã¥Ã° Ã­Ã  Ã¬Ã¥Ã­Ã¼Ã¸Ã¨Ã©
 		{
 			for (int i = 0; i < n; i++)
 				data[i] = copy[i];
@@ -355,7 +355,7 @@ inline vector<T*> vector<T>::find(const T& value)const
 }
 
 template<class T>
-inline std::istream& operator>>(std::istream& in, const vector<T>& c)
+inline std::istream& operator>>(std::istream& in, vector<T>& c)
 {
 	for (int i = 0; i < c.size; i++)
 		in >> c.data[i];
